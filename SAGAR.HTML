@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funky Gymnasic - Fitness Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            color: #333;
+            scroll-behavior: smooth;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(90deg, #ff6f61, #ffb347);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 1.2em;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #333;
+            transition: width 0.3s ease-in-out;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        nav a:hover {
+            color: #333;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            animation: fadeIn 1.5s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .hero h2 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+
+        .hero .btn {
+            background-color: #ff6f61;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            font-size: 1.2em;
+            border-radius: 5px;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .hero .btn:hover {
+            background-color: #e65b50;
+            transform: scale(1.1) translateY(-5px);
+        }
+
+        /* Tracker Section */
+        .tracker {
+            padding: 50px 20px;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .tracker h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ff6f61;
+        }
+
+        .tracker form {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tracker input, .tracker button {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .tracker button {
+            background-color: #ffb347;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .tracker button:hover {
+            background-color: #e69b30;
+        }
+
+        #workoutList {
+            margin-top: 20px;
+            text-align: left;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #workoutList li {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #workoutList li button {
+            background-color: #ff6f61;
+            padding: 5px 10px;
+            font-size: 0.9em;
+        }
+
+        /* Gallery Section */
+        .gallery {
+            padding: 50px 20px;
+            background: linear-gradient(90deg, #ffb347, #ff6f61);
+            text-align: center;
+        }
+
+        .gallery h2 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery-grid .image-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            background-color: #ddd; /* Fallback background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .gallery-grid .image-container::after {
+            content: 'Image not loaded';
+            color: #666;
+            font-size: 0.9em;
+            text-align: center;
+            display: none;
+        }
+
+        .gallery-grid .image-container img:not([src])::after,
+        .gallery-grid .image-container img[error] {
+            display: block;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s;
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        .gallery-grid img:nth-child(2) { animation-delay: 0.1s; }
+        .gallery-grid img:nth-child(3) { animation-delay: 0.2s; }
+        .gallery-grid img:nth-child(4) { animation-delay: 0.3s; }
+        .gallery-grid img:nth-child(5) { animation-delay: 0.4s; }
+        .gallery-grid img:nth-child(6) { animation-delay: 0.5s; }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Tooltip Styling */
+        .gallery-grid .tooltip {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .gallery-grid .image-container:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        footer p {
+            font-size: 1em;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.5em;
+            }
+
+            .hero p {
+                font-size: 1.2em;
+            }
+
+            nav a {
+                display: block;
+                margin: 10px 0;
+            }
+
+            .gallery-grid .tooltip {
+                font-size: 0.8em;
+                padding: 3px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Funky Gymnasic</h1>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#tracker">Tracker</a>
+            <a href="#gallery">Gallery</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div>
+            <h2>Unleash Your Inner Beast</h2>
+            <p>Track your fitness journey with Funky Gymnasic!</p>
+            <a href="#tracker" class="btn">Start Tracking</a>
+        </div>
+    </section>
+
+    <section class="tracker" id="tracker">
+        <h2>Fitness Tracker</h2>
+        <form id="trackerForm">
+            <input type="text" id="workout" placeholder="Enter workout (e.g., 30 min run)" required>
+            <input type="date" id="date" required>
+            <button type="submit">Add Workout</button>
+        </form>
+        <ul id="workoutList"></ul>
+    </section>
+
+    <section class="gallery" id="gallery">
+        <h2>Our Community</h2>
+        <div class="gallery-grid">
+            <div class="image-container">
+                <img src="C:\Users\Mudit Nagpal\OneDrive\Desktop\Star UML\All folders\Dsk data 21 10 2024\data structures\Mudit Wd project\Mudit se project\wd project\images.jpeg" alt="Fit woman lifting weights" title="Fit woman lifting weights" onerror="console.error('Failed to load image: Fit woman lifting weights'); this.src=''">
+                <span class="tooltip">Fit woman lifting weights</span>
+            </div>
+            <div class="image-container">
+                <img src="https://images.unsplash.com/photo-1518611012118-696072fd8f2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Fit person doing yoga" title="Fit person doing yoga" onerror="console.error('Failed to load image: Fit person doing yoga'); this.src=''">
+                <span class="tooltip">Fit person doing yoga</span>
+            </div>
+            <div class="image-container">
+                <img src="https://images.unsplash.com/photo-1552196563-55cd4e45efb3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Fit person running outdoors" title="Fit person running outdoors" onerror="console.error('Failed to load image: Fit person running outdoors'); this.src=''">
+                <span class="tooltip">Fit person running outdoors</span>
+            </div>
+            <div class="image-container">
+                <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Fit person training in gym" title="Fit person training in gym" onerror="console.error('Failed to load image: Fit person training in gym'); this.src=''">
+                <span class="tooltip">Fit person training in gym</span>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Funky Gymnasic. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const trackerForm = document.getElementById('trackerForm');
+        const workoutList = document.getElementById('workoutList');
+
+        // Load workouts from localStorage
+        let workouts = JSON.parse(localStorage.getItem('workouts')) || [];
+
+        // Render workouts
+        function renderWorkouts() {
+            workoutList.innerHTML = '';
+            workouts.forEach((workout, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${workout.text} - ${workout.date} <button onclick="deleteWorkout(${index})">Delete</button>`;
+                workoutList.appendChild(li);
+            });
+        }
+
+        // Add workout
+        trackerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const workoutText = document.getElementById('workout').value;
+            const workoutDate = document.getElementById('date').value;
+            workouts.push({ text: workoutText, date: workoutDate });
+            localStorage.setItem('workouts', JSON.stringify(workouts));
+            renderWorkouts();
+            trackerForm.reset();
+        });
+
+        // Delete workout
+        function deleteWorkout(index) {
+            const li = workoutList.children[index];
+            li.style.animation = 'slideOut 0.5s ease forwards';
+            li.addEventListener('animationend', () => {
+                workouts.splice(index, 1);
+                localStorage.setItem('workouts', JSON.stringify(workouts));
+                renderWorkouts();
+            }, { once: true });
+        }
+
+        // Slide out animation for deleted items
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes slideOut {
+                to {
+                    opacity: 0;
+                    transform: translateX(50px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initial render
+        renderWorkouts();
+    </script>
+</body>
+</html>
